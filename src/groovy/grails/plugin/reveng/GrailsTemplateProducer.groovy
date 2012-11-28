@@ -14,11 +14,12 @@
  */
 package grails.plugin.reveng
 
-import org.apache.log4j.Logger
 import org.hibernate.tool.hbm2x.ArtifactCollector
 import org.hibernate.tool.hbm2x.ExporterException
 import org.hibernate.tool.hbm2x.TemplateHelper
 import org.hibernate.tool.hbm2x.TemplateProducer
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Doesn't overwrite existing classes if configured not to.
@@ -27,7 +28,7 @@ import org.hibernate.tool.hbm2x.TemplateProducer
  */
 class GrailsTemplateProducer extends TemplateProducer {
 
-	protected Logger log = Logger.getLogger(getClass())
+	protected Logger log = LoggerFactory.getLogger(getClass())
 
 	protected TemplateHelper templateHelper
 	protected ArtifactCollector artifactCollector

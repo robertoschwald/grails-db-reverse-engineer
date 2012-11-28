@@ -16,10 +16,11 @@ package grails.plugin.reveng
 
 import java.util.regex.Pattern
 
-import org.apache.log4j.Logger
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy
 import org.hibernate.cfg.reveng.TableIdentifier
 import org.hibernate.mapping.Table
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.util.AntPathMatcher
 
 /**
@@ -27,7 +28,7 @@ import org.springframework.util.AntPathMatcher
  */
 class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy {
 
-	protected final Logger log = Logger.getLogger(getClass())
+	protected final Logger log = LoggerFactory.getLogger(getClass())
 
 	static final GrailsReverseEngineeringStrategy INSTANCE = new GrailsReverseEngineeringStrategy()
 
