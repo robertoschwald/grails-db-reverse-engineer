@@ -112,6 +112,5 @@ class Reenigne {
 
 		configuration.reverseEngineeringStrategy = reverseEngineeringStrategy
 		configuration.readFromJDBC defaultCatalog, defaultSchema
-		configuration.buildMappings()
 	}
 }
