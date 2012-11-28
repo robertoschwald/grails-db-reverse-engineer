@@ -27,9 +27,9 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
  */
 class GrailsCfg2JavaTool extends Cfg2JavaTool {
 
-	private Cfg2HbmTool c2h
-	private Configuration configuration
-	private ConfigObject revengConfig
+	protected Cfg2HbmTool c2h
+	protected Configuration configuration
+	protected ConfigObject revengConfig
 
 	GrailsCfg2JavaTool(Cfg2HbmTool c2h, Configuration configuration, ConfigObject revengConfig) {
 		this.c2h = c2h

@@ -32,10 +32,10 @@ import org.hibernate.cfg.reveng.dialect.MetaDataDialect
  */
 class GrailsJdbcBinder extends JDBCBinder {
 
-	private Settings settings
-	private JDBCMetaDataConfiguration cfg
-	private Mappings mappings
-	private ReverseEngineeringStrategy revengStrategy
+	protected Settings settings
+	protected JDBCMetaDataConfiguration cfg
+	protected Mappings mappings
+	protected ReverseEngineeringStrategy revengStrategy
 
 	GrailsJdbcBinder(JDBCMetaDataConfiguration cfg, Settings settings, Mappings mappings,
 			ReverseEngineeringStrategy revengStrategy) {

@@ -50,10 +50,10 @@ class Reenigne {
 
 	GrailsReverseEngineeringStrategy reverseEngineeringStrategy = GrailsReverseEngineeringStrategy.INSTANCE
 
-	private GrailsPojoExporter pojoExporter
-	private HibernateMappingExporter hbmXmlExporter = new HibernateMappingExporter()
-	private GrailsJdbcMetaDataConfiguration configuration = new GrailsJdbcMetaDataConfiguration()
-	private Properties properties = new Properties()
+	protected GrailsPojoExporter pojoExporter
+	protected HibernateMappingExporter hbmXmlExporter = new HibernateMappingExporter()
+	protected GrailsJdbcMetaDataConfiguration configuration = new GrailsJdbcMetaDataConfiguration()
+	protected Properties properties = new Properties()
 
 	void execute() {
 		try {
@@ -76,13 +76,13 @@ class Reenigne {
 		}
 	}
 
-	private void configureExporter(Exporter exporter) {
+	protected void configureExporter(Exporter exporter) {
 		exporter.setProperties properties
 		exporter.setConfiguration configuration
 		exporter.setOutputDirectory destDir
 	}
 
-	private void buildConfiguration() {
+	protected void buildConfiguration() {
 		properties.putAll(configuration.getProperties())
 
 		properties.put Environment.DRIVER, driverClass

@@ -22,7 +22,7 @@ import org.hibernate.cfg.reveng.ProgressListener
  */
 class ReverseEngineerProgressListener implements ProgressListener {
 
-	private Logger log = Logger.getLogger(getClass())
+	protected Logger log = Logger.getLogger(getClass())
 
 	void startSubTask(String name) {
 		log.info name

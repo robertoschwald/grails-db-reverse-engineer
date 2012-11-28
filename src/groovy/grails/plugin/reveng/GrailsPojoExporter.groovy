@@ -26,10 +26,10 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
  */
 class GrailsPojoExporter extends POJOExporter {
 
-	private Cfg2HbmTool c2h
-	private GrailsCfg2JavaTool c2j
-	private boolean overwrite
-	private ConfigObject revengConfig
+	protected Cfg2HbmTool c2h
+	protected GrailsCfg2JavaTool c2j
+	protected boolean overwrite
+	protected ConfigObject revengConfig
 
 	GrailsPojoExporter(boolean overwrite, ConfigObject revengConfig) {
 		this.overwrite = overwrite

@@ -33,7 +33,7 @@ import org.hibernate.type.LongType
  */
 class GrailsEntityPOJOClass extends EntityPOJOClass {
 
-	private static final Map<String, String> typeNameReplacements = [
+	protected static final Map<String, String> typeNameReplacements = [
 		'boolean': 'Boolean',
 		'byte':    'Byte',
 		'char':    'Character',
@@ -43,12 +43,12 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		'long':    'Long',
 		'short':   'Short']
 
-	private PersistentClass clazz
-	private Cfg2HbmTool c2h
-	private Configuration configuration
-	private ConfigObject revengConfig
-	private String newline = System.getProperty('line.separator')
-	private newProperties = []
+	protected PersistentClass clazz
+	protected Cfg2HbmTool c2h
+	protected Configuration configuration
+	protected ConfigObject revengConfig
+	protected String newline = System.getProperty('line.separator')
+	protected newProperties = []
 
 	GrailsEntityPOJOClass(PersistentClass clazz, Cfg2JavaTool cfg, Cfg2HbmTool c2h,
 			Configuration configuration, ConfigObject revengConfig) {
@@ -205,7 +205,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		''
 	}
 
-	private boolean isValidImport(String candidate) {
+	protected boolean isValidImport(String candidate) {
 		if ('java.math.BigDecimal'.equals(candidate) ||
 		    'java.math.BigInteger'.equals(candidate)) {
 			return false
@@ -220,7 +220,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		true
 	}
 
-	private boolean isInPackage(String candidate, String pkg) {
+	protected boolean isInPackage(String candidate, String pkg) {
 		if (!candidate.contains(pkg)) {
 			return false
 		}
@@ -409,7 +409,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		combine('static mappedBy = [', ', ', ']', mappedBy, true) + newline
 	}
 
-	private void findBelongsToAndHasMany(Set belongs, Set hasMany) {
+	protected void findBelongsToAndHasMany(Set belongs, Set hasMany) {
 
 		boolean bidirectionalManyToOne = revengConfig.bidirectionalManyToOne instanceof Boolean ?
 				revengConfig.bidirectionalManyToOne : true
@@ -449,7 +449,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		belongs.remove classShortName(getMappedClassName())
 	}
 
-	private boolean isPartOfPrimaryKey(Property prop) {
+	protected boolean isPartOfPrimaryKey(Property prop) {
 		if (c2j.isComponent(getIdentifierProperty()) &&
 					GrailsReverseEngineeringStrategy.INSTANCE.isReallyManyToManyTable(clazz.table)) {
 			String propClassShortName = classShortName(prop.value.referencedEntityName)
@@ -463,7 +463,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		false
 	}
 
-	private String findRealIdName(Property prop) {
+	protected String findRealIdName(Property prop) {
 		if (c2j.isComponent(getIdentifierProperty()) &&
 					GrailsReverseEngineeringStrategy.INSTANCE.isReallyManyToManyTable(clazz.table)) {
 
@@ -523,7 +523,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		typeNameReplacements[name] ?: name
 	}
 
-	private String findManyToManyOtherSide(Property prop) {
+	protected String findManyToManyOtherSide(Property prop) {
 		String belongsTo
 		prop.value.collectionTable.foreignKeyIterator.each { ForeignKey fk ->
 			if (prop.value.table != fk.referencedTable) {
@@ -533,14 +533,14 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		belongsTo
 	}
 
-	private String classShortName(String className) {
+	protected String classShortName(String className) {
 		if (className.indexOf('.') > -1) {
 			return className.substring(className.lastIndexOf('.') + 1)
 		}
 		className
 	}
 
-	private String combine(String start, String delim, String end, things, boolean lineUp = false) {
+	protected String combine(String start, String delim, String end, things, boolean lineUp = false) {
 		def buffer = new StringBuilder('\t')
 
 		String pad
