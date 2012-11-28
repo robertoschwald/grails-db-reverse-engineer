@@ -25,8 +25,10 @@ import org.hibernate.cfg.reveng.ReverseEngineeringStrategy
 class GrailsJdbcMetaDataConfiguration extends JDBCMetaDataConfiguration {
 
 	void readFromJDBC(String defaultCatalog, String defaultSchema) {
+
 		GrailsJdbcBinder binder = new GrailsJdbcBinder(
 			this, buildSettings(), createMappings(), getReverseEngineeringStrategy())
+
 		binder.readFromDatabase defaultCatalog, defaultSchema, buildMapping(this)
 	}
 }
