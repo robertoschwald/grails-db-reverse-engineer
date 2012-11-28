@@ -25,8 +25,14 @@ import org.hibernate.mapping.UniqueKey
 import org.hibernate.tool.hbm2x.Cfg2HbmTool
 import org.hibernate.tool.hbm2x.Cfg2JavaTool
 import org.hibernate.tool.hbm2x.pojo.EntityPOJOClass
+import org.hibernate.type.CalendarDateType
+import org.hibernate.type.CalendarType
+import org.hibernate.type.DateType
 import org.hibernate.type.IntegerType
 import org.hibernate.type.LongType
+import org.hibernate.type.TimeType
+import org.hibernate.type.TimestampType
+import org.hibernate.type.Type
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -299,7 +305,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 
 			if (property.columnSpan == 1) {
 				Column column = property.columnIterator.next()
-				if (column.length && column.length != Column.DEFAULT_LENGTH) {
+				if (column.length && column.length != Column.DEFAULT_LENGTH && !isDateType(property.type)) {
 					values.maxSize = column.length
 				}
 
@@ -333,6 +339,11 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 		}
 
 		constraints.length() ? "\tstatic constraints = {$newline$constraints\t}" : ''
+	}
+
+	protected boolean isDateType(Type type) {
+		(type instanceof DateType) || (type instanceof TimestampType) || (type instanceof TimeType) ||
+		(type instanceof CalendarType) || (type instanceof CalendarDateType)
 	}
 
 	void findNewProperties() {
