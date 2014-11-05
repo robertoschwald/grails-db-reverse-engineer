@@ -16,10 +16,10 @@ class DbReverseEngineerGrailsPlugin {
 	String version = '0.5'
 	String grailsVersion = '2.0 > *'
 	String author = 'Burt Beckwith'
-	String authorEmail = 'beckwithb@vmware.com'
+	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'Grails Database Reverse Engineering Plugin'
 	String description = 'Reverse-engineers a database to Grails domain classes.'
-	String documentation = 'http://grails-plugins.github.com/grails-db-reverse-engineer/'
+	String documentation = 'http://grails-plugins.github.io/grails-db-reverse-engineer/'
 
 	List pluginExcludes = [
 		'docs/**',

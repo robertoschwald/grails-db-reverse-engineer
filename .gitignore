@@ -1,7 +1,8 @@
-/cobertura.ser
 *.log
 /target
 /docs
 /grails-db-reverse-engineer-*.zip
+/grails-db-reverse-engineer-*.zip.sha1
 /plugin.xml
-.settings/
+/web-app
+/.settings
