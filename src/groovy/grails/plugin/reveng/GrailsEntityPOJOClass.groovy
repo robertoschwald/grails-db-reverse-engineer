@@ -318,7 +318,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 				}
 
 				clazz.table.uniqueKeyIterator.each { UniqueKey key ->
-					if (key.columnSpan == 1 || key.name == clazz.table.primaryKey.name) return
+					if (key.columnSpan == 1 || key.name == clazz.table.primaryKey?.name) return
 					if (key.columns[-1] == column) {
 						def otherNames = key.columns[0..-2].collect { "\"$it.name\"" }
 						values.unique = '[' + otherNames.reverse().join(', ') + ']'
