@@ -1,4 +1,4 @@
-/* Copyright 2010-2012 SpringSource.
+/* Copyright 2010-2014 SpringSource.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -318,7 +318,7 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 				}
 
 				clazz.table.uniqueKeyIterator.each { UniqueKey key ->
-					if (key.columnSpan == 1 || key.name == clazz.table.primaryKey.name) return
+					if (key.columnSpan == 1 || key.name == clazz.table.primaryKey?.name) return
 					if (key.columns[-1] == column) {
 						def otherNames = key.columns[0..-2].collect { "\"$it.name\"" }
 						values.unique = '[' + otherNames.reverse().join(', ') + ']'

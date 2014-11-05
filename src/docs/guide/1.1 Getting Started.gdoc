@@ -2,7 +2,7 @@ h4. The first step is installing the plugin. Add a plugin dependency in BuildCon
 
 {code}
 plugins {
-   runtime ':db-reverse-engineer:0.5'
+   runtime ':db-reverse-engineer:0.5.1'
 }
 {code}
 
