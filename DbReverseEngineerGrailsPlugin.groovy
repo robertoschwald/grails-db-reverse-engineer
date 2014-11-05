@@ -13,19 +13,17 @@
  * limitations under the License.
  */
 class DbReverseEngineerGrailsPlugin {
-	String version = '0.5'
+	String version = '0.5.1'
 	String grailsVersion = '2.0 > *'
 	String author = 'Burt Beckwith'
 	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'Grails Database Reverse Engineering Plugin'
 	String description = 'Reverse-engineers a database to Grails domain classes.'
 	String documentation = 'http://grails-plugins.github.io/grails-db-reverse-engineer/'
-
 	List pluginExcludes = [
 		'docs/**',
 		'src/docs/**'
 	]
-
 	String license = 'APACHE'
 	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPREVERSEENGINEER']
