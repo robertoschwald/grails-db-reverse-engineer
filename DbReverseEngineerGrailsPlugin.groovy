@@ -1,4 +1,4 @@
-/* Copyright 2010-2014 SpringSource.
+/* Copyright 2010-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ class DbReverseEngineerGrailsPlugin {
 		'src/docs/**'
 	]
 	String license = 'APACHE'
-	def organization = [name: 'SpringSource', url: 'http://www.springsource.org/']
+	def organization = [name: 'Grails', url: 'http://www.grails.org/']
 	def issueManagement = [system: 'JIRA', url: 'http://jira.grails.org/browse/GPREVERSEENGINEER']
 	def scm = [url: 'https://github.com/grails-plugins/grails-db-reverse-engineer']
 }
