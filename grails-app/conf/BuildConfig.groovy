@@ -13,11 +13,11 @@ grails.project.dependency.resolution = {
 	}
 
 	dependencies {
-		compile 'org.hibernate:hibernate-tools:3.6.0.Final', {
-			excludes 'ant', 'cglib', 'common', 'org.eclipse.jdt.core', 'runtime', 'text'
+		compile 'org.hibernate:hibernate-tools:4.3.1.Final', {
+			excludes 'ant', 'common', 'org.eclipse.jdt.core', 'runtime', 'text'
 		}
 
-		compile 'org.hibernate:hibernate-core:3.6.10.Final'
+		compile 'org.hibernate:hibernate-core:4.3.10.Final'
 	}
 
 	plugins {

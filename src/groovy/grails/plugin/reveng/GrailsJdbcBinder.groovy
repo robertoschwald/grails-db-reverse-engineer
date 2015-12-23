@@ -26,7 +26,6 @@ import org.hibernate.cfg.reveng.DatabaseCollector
 import org.hibernate.cfg.reveng.JDBCReader
 import org.hibernate.cfg.reveng.MappingsDatabaseCollector
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy
-import org.hibernate.cfg.reveng.dialect.MetaDataDialect
 
 /**
  * Registers a ProgressListener to log status messages.
@@ -56,11 +55,8 @@ class GrailsJdbcBinder extends JDBCBinder {
 		catalog = catalog ?: settings.defaultCatalogName
 		schema = schema ?: settings.defaultSchemaName
 
-		MetaDataDialect mdd = JDBCReaderFactory.newMetaDataDialect(settings.dialect, cfg.properties)
-		JDBCReader reader = new JDBCReader(mdd, settings.connectionProvider, settings.SQLExceptionConverter,
-				settings.defaultCatalogName, settings.defaultSchemaName, revengStrategy)
-
-		DatabaseCollector dbs = new MappingsDatabaseCollector(mappings, mdd)
+		JDBCReader reader = JDBCReaderFactory.newJDBCReader(cfg.properties, settings,revengStrategy, cfg.serviceRegistry)
+		DatabaseCollector dbs = new MappingsDatabaseCollector(mappings, reader.metaDataDialect)
 		reader.readDatabaseSchema dbs, catalog, schema, new ReverseEngineerProgressListener()
 		dbs
 	}
