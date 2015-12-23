@@ -11,7 +11,7 @@ h4. 2. Install the plugin by adding a dependency in BuildConfig.groovy:
 {code}
 plugins {
    ...
-   compile ':db-reverse-engineer:3.0.0'
+   compile ':db-reverse-engineer:4.0.0'
    ...
 }
 {code}
