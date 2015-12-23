@@ -1,0 +1,38 @@
+---
+grails:
+   profile: web
+   codegen:
+      defaultPackage: reveng.test
+info:
+   app:
+      name: '@info.app.name@'
+      version: '@info.app.version@'
+      grailsVersion: '@info.app.grailsVersion@'
+spring:
+   freemarker:
+      checkTemplateLocation: false
+   groovy:
+      template:
+         check-template-location: false
+
+---
+grails:
+   controllers:
+      defaultScope: singleton
+---
+hibernate:
+   cache:
+      queries: false
+      use_second_level_cache: false
+      use_query_cache: false
+
+environments:
+   development:
+      dataSource:
+         dbCreate: none
+         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+         driverClassName: com.mysql.jdbc.Driver
+         password: reveng
+         pooled: true
+         url: jdbc:mysql://localhost/reveng
+         username: reveng
