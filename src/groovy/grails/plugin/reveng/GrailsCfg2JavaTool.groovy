@@ -14,6 +14,9 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import org.hibernate.cfg.Configuration
 import org.hibernate.mapping.PersistentClass
 import org.hibernate.tool.hbm2x.Cfg2HbmTool
@@ -25,13 +28,15 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class GrailsCfg2JavaTool extends Cfg2JavaTool {
 
 	protected Cfg2HbmTool c2h
 	protected Configuration configuration
-	protected ConfigObject revengConfig
+	protected Map revengConfig
 
-	GrailsCfg2JavaTool(Cfg2HbmTool c2h, Configuration configuration, ConfigObject revengConfig) {
+	GrailsCfg2JavaTool(Cfg2HbmTool c2h, Configuration configuration, Map revengConfig) {
 		this.c2h = c2h
 		this.configuration = configuration
 		this.revengConfig = revengConfig

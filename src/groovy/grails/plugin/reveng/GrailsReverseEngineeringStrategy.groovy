@@ -14,23 +14,24 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import java.util.regex.Pattern
 
 import org.hibernate.cfg.reveng.DefaultReverseEngineeringStrategy
 import org.hibernate.cfg.reveng.TableIdentifier
 import org.hibernate.mapping.Table
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.util.AntPathMatcher
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy {
 
-	protected final Logger log = LoggerFactory.getLogger(getClass())
-
-	static final GrailsReverseEngineeringStrategy INSTANCE = new GrailsReverseEngineeringStrategy()
+	public static final GrailsReverseEngineeringStrategy INSTANCE = new GrailsReverseEngineeringStrategy()
 
 	protected Set<String> excludeTables = []
 	protected Set<Pattern> excludeTableRegexes = []
@@ -38,9 +39,9 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 	protected Set<String> includeTables = []
 	protected Set<Pattern> includeTableRegexes = []
 	protected Set<String> includeTableAntPatterns = []
-	protected Map<String, List<String>> excludeColumns = [:]
-	protected Map<String, List<Pattern>> excludeColumnRegexes = [:]
-	protected Map<String, List<String>> excludeColumnAntPatterns = [:]
+	protected Map<String, List<String>> excludeColumns = [:].withDefault {[]}
+	protected Map<String, List<Pattern>> excludeColumnRegexes = [:].withDefault {[]}
+	protected Map<String, List<String>> excludeColumnAntPatterns = [:].withDefault {[]}
 	protected Map<String, String> versionColumnNames = [:]
 	protected Set<String> manyToManyTables = []
 	protected Set<String> mappedManyToManyTables = []
@@ -62,20 +63,20 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 
 	protected boolean isNotIncluded(String name) {
 		if (!includeTables.contains(name)) {
-			log.debug "table $name not included by name"
+			log.debug 'table {} not included by name', name
 			return true
 		}
 
 		for (Pattern pattern : includeTableRegexes) {
 			if (!pattern.matcher(name).matches()) {
-				log.debug "table $name not included by regex $pattern"
+				log.debug 'table {} not included by regex {}', name, pattern
 				return true
 			}
 		}
 
 		for (String pattern : includeTableAntPatterns) {
 			if (!antMatcher.match(pattern, name)) {
-				log.debug "table $name not included by pattern $pattern"
+				log.debug 'table {} not included by pattern {}', name, pattern
 				return true
 			}
 		}
@@ -85,20 +86,20 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 
 	protected boolean isExcluded(String name) {
 		if (excludeTables.contains(name)) {
-			log.debug "table $name excluded by name"
+			log.debug 'table {} excluded by name', name
 			return true
 		}
 
 		for (Pattern pattern : excludeTableRegexes) {
 			if (pattern.matcher(name).matches()) {
-				log.debug "table $name excluded by regex $pattern"
+				log.debug 'table {} excluded by regex {}', name, pattern
 				return true
 			}
 		}
 
 		for (String pattern : excludeTableAntPatterns) {
 			if (antMatcher.match(pattern, name)) {
-				log.debug "table $name excluded by pattern $pattern"
+				log.debug 'table {} excluded by pattern {}', name, pattern
 				return true
 			}
 		}
@@ -111,20 +112,20 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 
 		List<String> excludeNames = excludeColumns[identifier.name]
 		if (excludeNames?.contains(columnName)) {
-			log.debug "column $columnName in table $identifier.name excluded by name"
+			log.debug 'column {} in table {} excluded by name', columnName, identifier.name
 			return true
 		}
 
 		for (Pattern pattern in excludeColumnRegexes[identifier.name]) {
 			if (pattern.matcher(columnName).matches()) {
-				log.debug "column $columnName in table $identifier.name excluded by regex $pattern"
+				log.debug 'column {} in table {} excluded by regex {}', columnName, identifier.name, pattern
 				return true
 			}
 		}
 
 		for (String pattern in excludeColumnAntPatterns[identifier.name]) {
 			if (antMatcher.match(pattern, columnName)) {
-				log.debug "column $columnName in table $identifier.name excluded by pattern $pattern"
+				log.debug 'column {} in table {} excluded by pattern {}', columnName, identifier.name, pattern
 				return true
 			}
 		}
@@ -136,7 +137,7 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 	String getOptimisticLockColumnName(TableIdentifier identifier) {
 		String name = versionColumnNames[identifier.name]
 		if (name) {
-			log.debug "using '$name' for version in table $identifier.name"
+			log.debug 'using "{}" for version in table {}', name, identifier.name
 		}
 		name
 	}
@@ -152,7 +153,7 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 
 	boolean isReallyManyToManyTable(Table table) {
 		if (manyToManyTables.contains(table.name)) {
-			log.debug "using $table.name as many-to-many table"
+			log.debug 'using {} as many-to-many table', table.name
 			return true
 		}
 		super.isManyToManyTable table
@@ -225,10 +226,9 @@ class GrailsReverseEngineeringStrategy extends DefaultReverseEngineeringStrategy
 	}
 
 	protected List getOrCreateList(Map map, String key) {
-		List list = map[key]
+		List list = map[key] as List
 		if (list == null) {
-			list = []
-			map[key] = list
+			map[key] = list = []
 		}
 		list
 	}

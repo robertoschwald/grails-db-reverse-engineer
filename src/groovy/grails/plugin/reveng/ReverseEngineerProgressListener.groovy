@@ -14,17 +14,17 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import org.hibernate.cfg.reveng.ProgressListener
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class ReverseEngineerProgressListener implements ProgressListener {
-
-	protected Logger log = LoggerFactory.getLogger(getClass())
-
 	void startSubTask(String name) {
 		log.info name
 	}

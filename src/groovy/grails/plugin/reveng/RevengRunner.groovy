@@ -14,69 +14,89 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class RevengRunner {
 
-	static void main(String[] args) {
-		String configPath = args[0]
-		String appName = args[1]
+	void run(Map config) {
 
-		File file = new File(configPath)
-		Map config = file.withObjectInputStream { it.readObject() }
-		new RevengRunner().run(config, appName)
-	}
+		Reenigne reenigne = new Reenigne(
+			revengConfig: config,
+			driverClass:  config.driverClassName as String,
+			password:     config.password as String,
+			username:     config.username as String,
+			url:          config.url as String,
+			dialect:      config.dialect as String,
+			packageName:  config.packageName as String,
+			destDir:      new File(config.destDir as String),
+			overwrite:    config.overwriteExisting as boolean)
 
-	void run(Map config, String appName) {
-
-		Reenigne reenigne = new Reenigne()
-		reenigne.revengConfig = config
-		reenigne.driverClass = config.driverClassName
-		reenigne.password = config.password
-		reenigne.username = config.username
-		reenigne.url = config.url
-		reenigne.dialect = config.dialect
-
-		reenigne.packageName = config.packageName
-		reenigne.destDir = new File(config.destDir)
 		if (config.defaultSchema) {
 			reenigne.defaultSchema = config.defaultSchema
 		}
 		if (config.defaultCatalog) {
 			reenigne.defaultCatalog = config.defaultCatalog
 		}
-		reenigne.overwrite = config.overwriteExisting
 
 		def strategy = reenigne.reverseEngineeringStrategy
 
-		config.versionColumns.each { table, column -> strategy.addVersionColumn table, column }
+		((Map<String, String>)config.versionColumns).each { String table, String column ->
+			strategy.addVersionColumn table, column
+		}
 
-		config.manyToManyTables.each { table -> strategy.addManyToManyTable table }
+		((Collection<String>)config.manyToManyTables).each { String table ->
+			strategy.addManyToManyTable table
+		}
 
-		config.manyToManyBelongsTos.each { manyTable, belongsTable -> strategy.setManyToManyBelongsTo manyTable, belongsTable }
+		((Map<String, String>)config.manyToManyBelongsTos).each { String manyTable, String belongsTable ->
+			strategy.setManyToManyBelongsTo manyTable, belongsTable
+		}
 
-		config.includeTables.each { table -> strategy.addIncludeTable table }
+		((Collection<String>)config.includeTables).each { String table ->
+			strategy.addIncludeTable table
+		}
 
-		config.includeTableRegexes.each { pattern -> strategy.addIncludeTableRegex pattern }
+		((Collection<String>)config.includeTableRegexes).each { String pattern ->
+			strategy.addIncludeTableRegex pattern
+		}
 
-		config.includeTableAntPatterns.each { pattern -> strategy.addIncludeTableAntPattern pattern }
+		((Collection<String>)config.includeTableAntPatterns).each { String pattern ->
+			strategy.addIncludeTableAntPattern pattern
+		}
 
-		config.excludeTables.each { table -> strategy.addExcludeTable table }
+		((Collection<String>)config.excludeTables).each { String table ->
+			strategy.addExcludeTable table
+		}
 
-		config.excludeTableRegexes.each { pattern -> strategy.addExcludeTableRegex pattern }
+		((Collection<String>)config.excludeTableRegexes).each { String pattern ->
+			strategy.addExcludeTableRegex pattern
+		}
 
-		config.excludeTableAntPatterns.each { pattern -> strategy.addExcludeTableAntPattern pattern }
+		((Collection<String>)config.excludeTableAntPatterns).each { String pattern ->
+			strategy.addExcludeTableAntPattern pattern
+		}
 
-		config.excludeColumns.each { table, columns -> strategy.addExcludeColumns table, columns }
+		((Map<String, List<String>>)config.excludeColumns).each { String table, List<String> columns ->
+			strategy.addExcludeColumns table, columns
+		}
 
-		config.excludeColumnRegexes.each { table, patterns -> strategy.addExcludeColumnRegexes table, patterns }
+		((Map<String, List<String>>)config.excludeColumnRegexes).each { String table, List<String> patterns ->
+			strategy.addExcludeColumnRegexes table, patterns
+		}
 
-		config.excludeColumnAntPatterns.each { table, patterns -> strategy.addExcludeColumnAntPatterns table, patterns }
+		((Map<String, List<String>>)config.excludeColumnAntPatterns).each { String table, List<String> patterns ->
+			strategy.addExcludeColumnAntPatterns table, patterns
+		}
 
-		config.mappedManyToManyTables.each { table -> strategy.addMappedManyToManyTable table }
+		((Collection<String>)config.mappedManyToManyTables).each { String table -> strategy.addMappedManyToManyTable table }
 
-		strategy.alwaysMapManyToManyTables = config.alwaysMapManyToManyTables
+		strategy.alwaysMapManyToManyTables = config.alwaysMapManyToManyTables as boolean
 
 		reenigne.execute()
 	}

@@ -15,6 +15,8 @@
 package grails.plugin.reveng
 
 import grails.util.GrailsUtil
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
 
 import org.hibernate.cfg.Environment
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings
@@ -26,6 +28,8 @@ import org.hibernate.tool.hbm2x.HibernateMappingExporter
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class Reenigne {
 
 	File destDir
@@ -46,7 +50,7 @@ class Reenigne {
 	boolean jdk5 = true
 	boolean overwrite = true
 
-	ConfigObject revengConfig
+	Map revengConfig
 
 	GrailsReverseEngineeringStrategy reverseEngineeringStrategy = GrailsReverseEngineeringStrategy.INSTANCE
 
@@ -61,8 +65,8 @@ class Reenigne {
 
 			pojoExporter = new GrailsPojoExporter(overwrite, revengConfig)
 			configureExporter pojoExporter
-			pojoExporter.getProperties().setProperty('ejb3', ejb3.toString())
-			pojoExporter.getProperties().setProperty('jdk5', jdk5.toString())
+			pojoExporter.properties.setProperty 'ejb3', ejb3 as String
+			pojoExporter.properties.setProperty 'jdk5', jdk5 as String
 
 			configureExporter hbmXmlExporter
 
@@ -77,38 +81,37 @@ class Reenigne {
 	}
 
 	protected void configureExporter(Exporter exporter) {
-		exporter.setProperties properties
-		exporter.setConfiguration configuration
-		exporter.setOutputDirectory destDir
+		exporter.properties = properties
+		exporter.configuration = configuration
+		exporter.outputDirectory = destDir
 	}
 
 	protected void buildConfiguration() {
-		properties.putAll(configuration.getProperties())
+		properties.putAll configuration.properties
 
-		properties.put Environment.DRIVER, driverClass
-		properties.put Environment.PASS, password
-		properties.put Environment.URL, url
-		properties.put Environment.USER, username
+		properties[Environment.DRIVER] = driverClass
+		properties[Environment.PASS] = password
+		properties[Environment.URL] = url
+		properties[Environment.USER] = username
 		if (dialect) {
-			properties.put Environment.DIALECT, dialect
+			properties[Environment.DIALECT] = dialect
 		}
 		if (defaultSchema) {
-			properties.put Environment.DEFAULT_SCHEMA, defaultSchema
+			properties[Environment.DEFAULT_SCHEMA] = defaultSchema
 		}
 		if (defaultCatalog) {
-			properties.put Environment.DEFAULT_CATALOG, defaultCatalog
+			properties[Environment.DEFAULT_CATALOG] = defaultCatalog
 		}
 
-		configuration.setProperties(properties)
+		configuration.properties = properties
 
-		configuration.setPreferBasicCompositeIds preferBasicCompositeIds
+		configuration.preferBasicCompositeIds = preferBasicCompositeIds
 
-		ReverseEngineeringSettings settings = new ReverseEngineeringSettings(reverseEngineeringStrategy)
+		reverseEngineeringStrategy.settings = new ReverseEngineeringSettings(reverseEngineeringStrategy)
 				.setDefaultPackageName(packageName)
 				.setDetectManyToMany(detectManyToMany)
 				.setDetectOneToOne(detectOneToOne)
 				.setDetectOptimisticLock(detectOptimisticLock)
-		reverseEngineeringStrategy.setSettings settings
 
 		configuration.reverseEngineeringStrategy = reverseEngineeringStrategy
 		configuration.readFromJDBC defaultCatalog, defaultSchema

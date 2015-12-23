@@ -6,5 +6,6 @@ target
 /grails-db-reverse-engineer-*.zip
 /grails-db-reverse-engineer-*.zip.sha1
 /plugin.xml
+/test-app/grails-app/domain
 /test-app/web-app/WEB-INF/tld
 /web-app

@@ -14,6 +14,9 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import org.hibernate.cfg.JDBCBinder
 import org.hibernate.cfg.JDBCMetaDataConfiguration
 import org.hibernate.cfg.JDBCReaderFactory
@@ -30,6 +33,8 @@ import org.hibernate.cfg.reveng.dialect.MetaDataDialect
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class GrailsJdbcBinder extends JDBCBinder {
 
 	protected Settings settings
@@ -48,12 +53,11 @@ class GrailsJdbcBinder extends JDBCBinder {
 
 	@Override
 	DatabaseCollector readDatabaseSchema(String catalog, String schema) {
-		catalog = catalog ?: settings.getDefaultCatalogName()
-		schema = schema ?: settings.getDefaultSchemaName()
+		catalog = catalog ?: settings.defaultCatalogName
+		schema = schema ?: settings.defaultSchemaName
 
-		MetaDataDialect mdd = JDBCReaderFactory.newMetaDataDialect(
-				settings.dialect, cfg.getProperties())
-		JDBCReader reader = new JDBCReader(mdd, settings.connectionProvider, settings.getSQLExceptionConverter(),
+		MetaDataDialect mdd = JDBCReaderFactory.newMetaDataDialect(settings.dialect, cfg.properties)
+		JDBCReader reader = new JDBCReader(mdd, settings.connectionProvider, settings.SQLExceptionConverter,
 				settings.defaultCatalogName, settings.defaultSchemaName, revengStrategy)
 
 		DatabaseCollector dbs = new MappingsDatabaseCollector(mappings, mdd)

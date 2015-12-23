@@ -15,9 +15,10 @@
 package grails.plugin.reveng
 
 import org.hibernate.tool.hbm2x.Cfg2HbmTool
-import org.hibernate.tool.hbm2x.Cfg2JavaTool
 import org.hibernate.tool.hbm2x.POJOExporter
 import org.hibernate.tool.hbm2x.pojo.POJOClass
+
+import freemarker.cache.TemplateLoader
 
 /**
  * Customizes the artifact name and source template, and customizes the tools.
@@ -26,38 +27,60 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
  */
 class GrailsPojoExporter extends POJOExporter {
 
-	protected Cfg2HbmTool c2h
-	protected GrailsCfg2JavaTool c2j
-	protected boolean overwrite
-	protected ConfigObject revengConfig
+	final Cfg2HbmTool cfg2HbmTool = new Cfg2HbmTool()
+	final GrailsCfg2JavaTool cfg2JavaTool
 
-	GrailsPojoExporter(boolean overwrite, ConfigObject revengConfig) {
+	protected boolean overwrite
+
+	protected final String template = '''
+${pojo.getPackageDeclaration()}
+${pojo.findNewProperties()}
+<#assign classbody>
+${pojo.renderClassStart()}
+
+${pojo.renderProperties()}
+
+${pojo.renderHashCodeAndEquals()}
+
+${pojo.renderMany()}
+
+${pojo.renderMappedBy()}
+
+${pojo.renderMapping()}
+
+${pojo.renderConstraints()}
+}
+</#assign>
+
+${pojo.generateImports()}${classbody}'''
+
+	protected TemplateLoader templateLoader = new TemplateLoader() {
+		def findTemplateSource(String name) { template }
+		long getLastModified(Object templateSource) { System.currentTimeMillis() - 100000 }
+		Reader getReader(templateSource, String encoding) { new StringReader(template) }
+		void closeTemplateSource(Object templateSource) {}
+	}
+
+	GrailsPojoExporter(boolean overwrite, Map revengConfig) {
 		this.overwrite = overwrite
-		c2h = new Cfg2HbmTool()
-		c2j = new GrailsCfg2JavaTool(c2h, getConfiguration(), revengConfig)
+		cfg2JavaTool = new GrailsCfg2JavaTool(cfg2HbmTool, configuration, revengConfig)
 	}
 
 	@Override
 	protected void init() {
-		setTemplateName getClass().getPackage().name.replace('.', '/') + '/DomainClass.ftl'
-    	setFilePattern '{package-name}/{class-name}.groovy'
+		templateName = getClass().getPackage().name.replace('.', '/') + '/DomainClass.ftl'
+		filePattern = '{package-name}/{class-name}.groovy'
 	}
 
 	@Override
-	Cfg2HbmTool getCfg2HbmTool() { c2h }
-
-	@Override
-	Cfg2JavaTool getCfg2JavaTool() { c2j }
-
-	@Override
 	protected void exportPOJO(Map additionalContext, POJOClass element) {
-		GrailsTemplateProducer producer = new GrailsTemplateProducer(
-			getTemplateHelper(), getArtifactCollector(), overwrite)
+		templateHelper.freeMarkerEngine.templateLoader = templateLoader
+
+		GrailsTemplateProducer producer = new GrailsTemplateProducer(templateHelper, artifactCollector, overwrite)
 		additionalContext.pojo = element
 		additionalContext.clazz = element.decoratedObject
 		String filename = resolveFilename(element)
-		producer.produce additionalContext, getTemplateName(),
-			new File(getOutputDirectory(), filename),
+		producer.produce additionalContext, templateName, new File(outputDirectory, filename),
 			templateName, element.toString()
 	}
 }

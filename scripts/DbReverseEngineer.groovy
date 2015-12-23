@@ -33,7 +33,7 @@ target(dbReverseEngineer: 'Reverse-engineers a database and creates domain class
 
 		event('StatusUpdate', ["Starting database reverse engineering, connecting to '$mergedConfig.url' as '$mergedConfig.username' ..."])
 
-		runner.run mergedConfig, metadata['app.name']
+		runner.run mergedConfig
 
 		event('StatusUpdate', ['Finished database reverse engineering'])
 	}
@@ -45,7 +45,25 @@ target(dbReverseEngineer: 'Reverse-engineers a database and creates domain class
 
 protected  Map buildMergedConfig() {
 
-	def mergedConfig = [:]
+	def mergedConfig = [
+		alwaysMapManyToManyTables: false,
+		defaultCatalog: '',
+		defaultSchema: '',
+		excludeColumnAntPatterns: [:],
+		excludeColumnRegexes: [:],
+		excludeColumns: [:],
+		excludeTableAntPatterns: [],
+		excludeTableRegexes: [],
+		excludeTables: [],
+		includeTableAntPatterns: [],
+		includeTableRegexes: [],
+		includeTables: [],
+		manyToManyBelongsTos: [:],
+		manyToManyTables: [],
+		mappedManyToManyTables: [],
+		overwriteExisting: true,
+		versionColumns: [:]
+	]
 
 	def dsConfig = config.dataSource
 
@@ -53,8 +71,8 @@ protected  Map buildMergedConfig() {
 	mergedConfig.password = dsConfig.password ?: ''
 	mergedConfig.username = dsConfig.username ?: 'sa'
 	mergedConfig.url = dsConfig.url ?: 'jdbc:h2:mem:testDB'
-	if (dsConfig.dialect instanceof String) {
-		mergedConfig.dialect = dsConfig.dialect
+	if (dsConfig.dialect instanceof CharSequence) {
+		mergedConfig.dialect = dsConfig.dialect.toString()
 	}
 	else if (dsConfig.dialect instanceof Class) {
 		mergedConfig.dialect = dsConfig.dialect.name
@@ -72,15 +90,9 @@ protected  Map buildMergedConfig() {
 	if (revengConfig.overwriteExisting instanceof Boolean) {
 		mergedConfig.overwriteExisting = revengConfig.overwriteExisting
 	}
-	else {
-		mergedConfig.overwriteExisting = true
-	}
 
 	if (revengConfig.alwaysMapManyToManyTables instanceof Boolean) {
 		mergedConfig.alwaysMapManyToManyTables = revengConfig.alwaysMapManyToManyTables
-	}
-	else {
-		mergedConfig.alwaysMapManyToManyTables = false
 	}
 
 	for (String name in ['versionColumns', 'manyToManyTables', 'manyToManyBelongsTos',
@@ -88,7 +100,9 @@ protected  Map buildMergedConfig() {
 	                     'excludeTables', 'excludeTableRegexes', 'excludeTableAntPatterns',
 	                     'excludeColumns', 'excludeColumnRegexes', 'excludeColumnAntPatterns',
 	                     'mappedManyToManyTables']) {
-		mergedConfig[name] = revengConfig[name]
+		if (revengConfig[name]) {
+			mergedConfig[name] = revengConfig[name]
+		}
 	}
 
 	mergedConfig

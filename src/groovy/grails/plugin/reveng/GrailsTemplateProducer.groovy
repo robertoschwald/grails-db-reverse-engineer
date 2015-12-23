@@ -14,32 +14,34 @@
  */
 package grails.plugin.reveng
 
+import groovy.transform.CompileStatic
+import groovy.util.logging.Slf4j
+
 import org.hibernate.tool.hbm2x.ArtifactCollector
 import org.hibernate.tool.hbm2x.ExporterException
 import org.hibernate.tool.hbm2x.TemplateHelper
 import org.hibernate.tool.hbm2x.TemplateProducer
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
 /**
  * Doesn't overwrite existing classes if configured not to.
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
+@Slf4j
 class GrailsTemplateProducer extends TemplateProducer {
 
-	protected Logger log = LoggerFactory.getLogger(getClass())
+	private static final String newline = System.getProperty('line.separator')
 
 	protected TemplateHelper templateHelper
 	protected ArtifactCollector artifactCollector
 	protected boolean overwrite
 
-	GrailsTemplateProducer(TemplateHelper templateHelper, ArtifactCollector artifactCollector,
-			boolean overwrite) {
-		super(templateHelper, artifactCollector)
-		this.templateHelper = templateHelper
-		this.artifactCollector = artifactCollector
+	GrailsTemplateProducer(TemplateHelper helper, ArtifactCollector collector, boolean overwrite) {
+		super(helper, collector)
 		this.overwrite = overwrite
+		templateHelper = helper
+		artifactCollector = collector
 	}
 
 	@Override
@@ -47,13 +49,13 @@ class GrailsTemplateProducer extends TemplateProducer {
 			String identifier, String fileType, String rootContext) {
 
 		if (!overwrite && destination.exists()) {
-			log.warn "Not overwriting $destination"
+			log.warn 'Not overwriting {}', destination
 			return
 		}
 
 		String content = produceToString(additionalContext, templateName, rootContext)
 		if (!content.trim()) {
-			log.warn "Generated output is empty. Skipped creation for file $destination"
+			log.warn 'Generated output is empty. Skipped creation for file {}', destination
 			return
 		}
 
@@ -61,7 +63,7 @@ class GrailsTemplateProducer extends TemplateProducer {
 		try {
 			templateHelper.ensureExistence destination
 			artifactCollector.addFile destination, fileType
-			log.debug "Creating $destination.absolutePath"
+			log.debug 'Creating {}', destination.absolutePath
 			fileWriter = new FileWriter(destination)
 			fileWriter.write content
 		}
@@ -79,8 +81,8 @@ class GrailsTemplateProducer extends TemplateProducer {
 		}
 	}
 
-	protected String produceToString(Map additionalContext, String templateName, String rootContext) {
-		additionalContext.each { k, v -> templateHelper.putInContext k, v }
+	protected String produceToString(Map<String, Object> additionalContext, String templateName, String rootContext) {
+		additionalContext.each { String k, v -> templateHelper.putInContext k, v }
 
 		StringWriter writer = new StringWriter()
 		BufferedWriter bufferedWriter = new BufferedWriter(writer)
@@ -99,17 +101,15 @@ class GrailsTemplateProducer extends TemplateProducer {
 	}
 
 	protected String fixWhitespace(String content) {
-		String newline = System.getProperty('line.separator')
-		def lines = []
-		content.eachLine { lines << it }
+		List<String> lines = []
+		content.eachLine { lines << (it as String) }
 		lines << newline
 
 		def fixed = new StringBuilder()
 		int count = lines.size()
 		for (int i = 0; i < count - 1; i++) {
 			String line = lines[i]
-			fixed.append line
-			fixed.append newline
+			fixed << line << newline
 			if (isBlankLine(line)) {
 				while (isBlankLine(lines[i + 1]) && i < count - 1) {
 					i++
@@ -117,11 +117,11 @@ class GrailsTemplateProducer extends TemplateProducer {
 			}
 		}
 
-		content = fixed.toString()
+		content = fixed
 
 		// 2nd pass to remove extra blank at end
 		lines = []
-		content.eachLine { lines << it }
+		content.eachLine { lines << (it as String) }
 		lines << newline
 		if (!lines[-3]) {
 			lines.remove lines.size() - 3

@@ -15,7 +15,6 @@
 package grails.plugin.reveng
 
 import org.hibernate.cfg.JDBCMetaDataConfiguration
-import org.hibernate.cfg.reveng.ReverseEngineeringStrategy
 
 /**
  * Creates a GrailsJdbcBinder to register a logging ProgressListener.
@@ -27,7 +26,7 @@ class GrailsJdbcMetaDataConfiguration extends JDBCMetaDataConfiguration {
 	void readFromJDBC(String defaultCatalog, String defaultSchema) {
 
 		GrailsJdbcBinder binder = new GrailsJdbcBinder(
-			this, buildSettings(), createMappings(), getReverseEngineeringStrategy())
+			this, buildSettings(), createMappings(), reverseEngineeringStrategy)
 
 		binder.readFromDatabase defaultCatalog, defaultSchema, buildMapping(this)
 	}
