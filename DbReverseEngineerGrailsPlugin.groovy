@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 class DbReverseEngineerGrailsPlugin {
-	String version = '0.5.1'
+	String version = '3.0.0'
 	String grailsVersion = '2.3.0 > *'
 	String author = 'Burt Beckwith'
 	String authorEmail = 'burt@burtbeckwith.com'
