@@ -2,7 +2,7 @@ It's most convenient when creating an application to also create the database at
 
 This plugin will save you a lot of time by using the JDBC metadata API to inspect your database schema and create domain classes for you, using some assumptions and augmented by configuration options that you set.
 
-The core of the plugin is the [db-reverse-engineer|Scripts] script. There are too many configuration options to support specifying them when running the script, so it takes no arguments and uses configuration options set in @grails-app/conf/Config.groovy@. These are described in [section 2|guide:2 Configuration].
+The core of the plugin is the [db-reverse-engineer|Scripts] script. There are too many configuration options to support specifying them when running the script, so it takes no arguments and uses configuration options set in @grails-app/conf/Config.groovy@. These are described in the [section on configuration|configuration].
 
 h4. Environments
 
@@ -28,7 +28,7 @@ h4. Re-running the reverse engineering script
 
 If you have new or changed tables you can re-run the [db-reverse-engineer|Scripts] script to pick up changes and additions. This is not an incremental process though, so existing classes will be overwritten and you will lose any changes you made since the last run. But it's simple to define which tables to include or exclude.
 
-As described in [section 2|guide:2 Configuration], you can use a combination of the @grails.plugin.reveng.includeTables@, @grails.plugin.reveng.includeTableRegexes@, @grails.plugin.reveng.includeTableAntPatterns@, @grails.plugin.reveng.excludeTables@, @grails.plugin.reveng.excludeTableRegexes@, and @grails.plugin.reveng.excludeTableAntPatterns@ properties to define which tables to include or exclude.
+As described in [the configuration section|guide:configuration], you can use a combination of the @grails.plugin.reveng.includeTables@, @grails.plugin.reveng.includeTableRegexes@, @grails.plugin.reveng.includeTableAntPatterns@, @grails.plugin.reveng.excludeTables@, @grails.plugin.reveng.excludeTableRegexes@, and @grails.plugin.reveng.excludeTableAntPatterns@ properties to define which tables to include or exclude.
 
 By default all tables are included, and the plugin assumes you're more likely to exclude than include. So you can specify one or more table names to explicitly exclude using @grails.plugin.reveng.excludeTables@, one or more regex patterns for exclusion using @grails.plugin.reveng.excludeTableRegexes@, and one or more Ant-style patterns for exclusion using @grails.plugin.reveng.excludeTableAntPatterns@.
 
@@ -71,13 +71,13 @@ By default the @db-reverse-engineer@ script will overwrite existing classes. You
 
 h4. Many-to-many tables
 
-Typically many-to-many relationships are implemented using a join table which contains just two columns which are foreign keys referring to the two related tables. It's possible for join tables to have extra columns though, and this will cause problems when trying to infer relationships. By default Hibernate will only consider tables that have two foreign key columns to be join tables. To get the script to correctly use join tables with extra columns, you can specify the table names with the @grails.plugin.reveng.manyToManyTables@ property. This is demonstrated in [the tutorial|guide:4 Tutorial].
+Typically many-to-many relationships are implemented using a join table which contains just two columns which are foreign keys referring to the two related tables. It's possible for join tables to have extra columns though, and this will cause problems when trying to infer relationships. By default Hibernate will only consider tables that have two foreign key columns to be join tables. To get the script to correctly use join tables with extra columns, you can specify the table names with the @grails.plugin.reveng.manyToManyTables@ property. This is demonstrated in [the tutorial|guide:tutorial].
 
-Another problem with many-to-many relationships is that one of the two GORM classes needs to be the 'owning' side and the other needs to be the 'owned' side, but this cannot be reliably inferred from the database. Both classes need a @hasMany@ declaration, but the 'owned' domain class also needs a @belongsTo@ declaration. So all of your many-to-many related tables need to have the tables that will create the @belongsTo@ classes specified in the @grails.plugin.reveng.manyToManyBelongsTos@ property. This is demonstrated in [the tutorial|guide:4 Tutorial].
+Another problem with many-to-many relationships is that one of the two GORM classes needs to be the 'owning' side and the other needs to be the 'owned' side, but this cannot be reliably inferred from the database. Both classes need a @hasMany@ declaration, but the 'owned' domain class also needs a @belongsTo@ declaration. So all of your many-to-many related tables need to have the tables that will create the @belongsTo@ classes specified in the @grails.plugin.reveng.manyToManyBelongsTos@ property. This is demonstrated in [the tutorial|guide:tutorial].
 
 h4. Optimistic locking columns
 
-Hibernate assumes that columns used for optimistic lock detection are called @version@. If you have customized one or more column names, you can direct the script about what the custom names are with the @grails.plugin.reveng.versionColumns@ property. This is demonstrated in [the tutorial|guide:4 Tutorial].
+Hibernate assumes that columns used for optimistic lock detection are called @version@. If you have customized one or more column names, you can direct the script about what the custom names are with the @grails.plugin.reveng.versionColumns@ property. This is demonstrated in [the tutorial|guide:tutorial].
 
 h4. Logging
 
