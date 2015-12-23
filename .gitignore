@@ -5,3 +5,5 @@
 /plugin.xml
 /web-app
 /.settings
+/.gradle
+/build
