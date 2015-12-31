@@ -14,42 +14,13 @@ buildscript {
 }
 
 plugins {
-	id 'io.spring.dependency-management' version '0.5.2.RELEASE'
+	id 'io.spring.dependency-management' version '0.5.4.RELEASE'
 }
-
-version '0.1'
-group 'reveng.test'
 
 apply plugin: 'spring-boot'
-apply plugin: 'org.grails.grails-web'
-
-ext {
-	grailsVersion = project.grailsVersion
-}
-
-repositories {
-	mavenLocal()
-	maven { url 'https://repo.grails.org/grails/core' }
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.grails:grails-bom:$grailsVersion"
-	}
-	applyMavenExclusions false
-}
+apply from: '../gradle/testapp.gradle'
 
 dependencies {
-	compile 'org.springframework.boot:spring-boot-starter-logging'
-	compile 'org.springframework.boot:spring-boot-autoconfigure'
-	compile 'org.springframework.boot:spring-boot-starter-tomcat'
-	compile 'org.grails:grails-dependencies'
-	compile 'org.grails:grails-web-boot'
-
 	compile 'org.grails.plugins:hibernate'
-	compile 'org.grails.plugins:db-reverse-engineer:4.0.0'
-
    runtime 'mysql:mysql-connector-java:5.1.38'
-
-	console 'org.grails:grails-console'
 }
