@@ -21,7 +21,7 @@ import groovy.util.logging.Slf4j
 @CompileStatic
 @Slf4j
 class DbReverseEngineerGrailsPlugin extends Plugin {
-	String grailsVersion = '3.0.0 > *'
+	String grailsVersion = '4.0.0 > *'
 	String author = 'Burt Beckwith'
 	String authorEmail = 'burt@burtbeckwith.com'
 	String title = 'Grails Database Reverse Engineering Plugin'
@@ -31,4 +31,10 @@ class DbReverseEngineerGrailsPlugin extends Plugin {
 	def organization = [name: 'Grails', url: 'http://www.grails.org/']
 	def issueManagement = [url: 'https://github.com/grails-plugins/grails-db-reverse-engineer/issues']
 	def scm = [url: 'https://github.com/grails-plugins/grails-db-reverse-engineer']
+
+	def profiles = ['plugin']
+
+	def pluginExcludes = [
+		"grails-app/views/error.gsp"
+	]
 }

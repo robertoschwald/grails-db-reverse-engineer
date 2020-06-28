@@ -15,24 +15,15 @@
 package grails.plugin.reveng
 
 import groovy.util.logging.Slf4j
-import org.hibernate.cfg.Configuration
-import org.hibernate.mapping.Column
-import org.hibernate.mapping.ForeignKey
-import org.hibernate.mapping.ManyToOne
-import org.hibernate.mapping.PersistentClass
-import org.hibernate.mapping.Property
-import org.hibernate.mapping.UniqueKey
+import org.hibernate.mapping.*
 import org.hibernate.tool.hbm2x.Cfg2HbmTool
 import org.hibernate.tool.hbm2x.Cfg2JavaTool
 import org.hibernate.tool.hbm2x.pojo.EntityPOJOClass
-import org.hibernate.type.CalendarDateType
-import org.hibernate.type.CalendarType
-import org.hibernate.type.DateType
-import org.hibernate.type.IntegerType
-import org.hibernate.type.LongType
-import org.hibernate.type.TimeType
-import org.hibernate.type.TimestampType
-import org.hibernate.type.Type
+import org.hibernate.type.*
+
+import java.util.List
+import java.util.Map
+import java.util.Set
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
@@ -53,17 +44,17 @@ class GrailsEntityPOJOClass extends EntityPOJOClass {
 
 	protected PersistentClass clazz
 	protected Cfg2HbmTool c2h
-	protected Configuration configuration
 	protected Map revengConfig
 	protected String newline = System.getProperty('line.separator')
 	protected List<Property> newProperties = []
 
-	GrailsEntityPOJOClass(PersistentClass clazz, Cfg2JavaTool cfg, Cfg2HbmTool c2h,
-			Configuration configuration, Map revengConfig) {
+	GrailsEntityPOJOClass(PersistentClass clazz,
+												Cfg2JavaTool cfg,
+												Cfg2HbmTool c2h,
+												Map revengConfig) {
 		super(clazz, cfg)
 		this.clazz = clazz
 		this.c2h = c2h
-		this.configuration = configuration
 		this.revengConfig = revengConfig
 	}
 

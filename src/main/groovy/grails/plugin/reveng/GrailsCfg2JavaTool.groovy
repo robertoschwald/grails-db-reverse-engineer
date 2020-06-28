@@ -32,17 +32,15 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
 class GrailsCfg2JavaTool extends Cfg2JavaTool {
 
 	protected Cfg2HbmTool c2h
-	protected Configuration configuration
 	protected Map revengConfig
 
-	GrailsCfg2JavaTool(Cfg2HbmTool c2h, Configuration configuration, Map revengConfig) {
+	GrailsCfg2JavaTool(Cfg2HbmTool c2h, Map revengConfig) {
 		this.c2h = c2h
-		this.configuration = configuration
 		this.revengConfig = revengConfig
 	}
 
 	@Override
 	POJOClass getPOJOClass(PersistentClass comp) {
-		new GrailsEntityPOJOClass(comp, this, c2h, configuration, revengConfig)
+		new GrailsEntityPOJOClass(comp, this, c2h, revengConfig)
 	}
 }

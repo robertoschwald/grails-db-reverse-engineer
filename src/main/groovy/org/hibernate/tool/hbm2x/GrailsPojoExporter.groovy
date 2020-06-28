@@ -12,9 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package grails.plugin.reveng
+package org.hibernate.tool.hbm2x
 
 import freemarker.cache.TemplateLoader
+import grails.plugin.reveng.GrailsCfg2JavaTool
+import grails.plugin.reveng.GrailsTemplateProducer
+import groovy.transform.CompileStatic
 import org.hibernate.tool.hbm2x.Cfg2HbmTool
 import org.hibernate.tool.hbm2x.POJOExporter
 import org.hibernate.tool.hbm2x.pojo.POJOClass
@@ -24,6 +27,7 @@ import org.hibernate.tool.hbm2x.pojo.POJOClass
  *
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
+@CompileStatic
 class GrailsPojoExporter extends POJOExporter {
 
 	final Cfg2HbmTool cfg2HbmTool = new Cfg2HbmTool()
@@ -62,7 +66,7 @@ ${pojo.generateImports()}${classbody}'''
 
 	GrailsPojoExporter(boolean overwrite, Map revengConfig) {
 		this.overwrite = overwrite
-		cfg2JavaTool = new GrailsCfg2JavaTool(cfg2HbmTool, configuration, revengConfig)
+		this.cfg2JavaTool = new GrailsCfg2JavaTool(cfg2HbmTool, revengConfig)
 	}
 
 	@Override

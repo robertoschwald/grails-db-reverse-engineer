@@ -17,9 +17,11 @@ package grails.plugin.reveng
 import grails.util.GrailsUtil
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.hibernate.boot.Metadata
 import org.hibernate.cfg.Environment
 import org.hibernate.cfg.reveng.ReverseEngineeringSettings
 import org.hibernate.tool.hbm2x.Exporter
+import org.hibernate.tool.hbm2x.GrailsPojoExporter
 import org.hibernate.tool.hbm2x.HibernateMappingExporter
 
 /**
@@ -55,7 +57,7 @@ class Reenigne {
 
 	protected GrailsPojoExporter pojoExporter
 	protected HibernateMappingExporter hbmXmlExporter = new HibernateMappingExporter()
-	protected GrailsJdbcMetaDataConfiguration configuration = new GrailsJdbcMetaDataConfiguration()
+	protected GrailsJdbcMetaDataConfiguration configuration
 	protected Properties properties = new Properties()
 
 	void execute() {
@@ -73,20 +75,19 @@ class Reenigne {
 //			hbmXmlExporter.start()
 		}
 		catch (e) {
-			GrailsUtil.sanitize e
+			GrailsUtil.deepSanitize e
 			e.printStackTrace()
 			throw e
 		}
 	}
 
 	protected void configureExporter(Exporter exporter) {
-		exporter.properties = properties
-		exporter.configuration = configuration
+		exporter.metadataDescriptor = configuration
 		exporter.outputDirectory = destDir
 	}
 
-	protected void buildConfiguration() {
-		properties.putAll configuration.properties
+	protected Metadata buildConfiguration() {
+		// properties.putAll configuration.properties
 
 		properties[Environment.DRIVER] = driverClass
 		properties[Environment.PASS] = password
@@ -101,18 +102,13 @@ class Reenigne {
 		if (defaultCatalog) {
 			properties[Environment.DEFAULT_CATALOG] = defaultCatalog
 		}
-
-		configuration.properties = properties
-
-		configuration.preferBasicCompositeIds = preferBasicCompositeIds
-
+		configuration	= new GrailsJdbcMetaDataConfiguration(reverseEngineeringStrategy, properties, preferBasicCompositeIds)
 		reverseEngineeringStrategy.settings = new ReverseEngineeringSettings(reverseEngineeringStrategy)
 				.setDefaultPackageName(packageName)
 				.setDetectManyToMany(detectManyToMany)
 				.setDetectOneToOne(detectOneToOne)
 				.setDetectOptimisticLock(detectOptimisticLock)
 
-		configuration.reverseEngineeringStrategy = reverseEngineeringStrategy
-		configuration.readFromJDBC defaultCatalog, defaultSchema
+		configuration.createMetadata()
 	}
 }

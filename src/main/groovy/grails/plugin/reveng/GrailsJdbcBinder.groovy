@@ -16,16 +16,14 @@ package grails.plugin.reveng
 
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
+import org.hibernate.boot.spi.MetadataBuildingContext
 import org.hibernate.cfg.JDBCBinder
-import org.hibernate.cfg.JDBCMetaDataConfiguration
 import org.hibernate.cfg.JDBCReaderFactory
-import org.hibernate.cfg.Mappings
-import org.hibernate.cfg.Settings
 import org.hibernate.cfg.reveng.DatabaseCollector
 import org.hibernate.cfg.reveng.JDBCReader
 import org.hibernate.cfg.reveng.MappingsDatabaseCollector
 import org.hibernate.cfg.reveng.ReverseEngineeringStrategy
-
+import org.hibernate.service.ServiceRegistry
 /**
  * Registers a ProgressListener to log status messages.
  *
@@ -35,27 +33,38 @@ import org.hibernate.cfg.reveng.ReverseEngineeringStrategy
 @Slf4j
 class GrailsJdbcBinder extends JDBCBinder {
 
-	protected Settings settings
-	protected JDBCMetaDataConfiguration cfg
-	protected Mappings mappings
-	protected ReverseEngineeringStrategy revengStrategy
+	private Properties properties
+	private final MetadataBuildingContext mdbc
+	private ReverseEngineeringStrategy revengStrategy
+	private final ServiceRegistry serviceRegistry
 
-	GrailsJdbcBinder(JDBCMetaDataConfiguration cfg, Settings settings, Mappings mappings,
-			ReverseEngineeringStrategy revengStrategy) {
-		super(cfg, settings, mappings, revengStrategy)
-		this.settings = settings
-		this.cfg = cfg
-		this.mappings = mappings
+//	protected Settings settings
+//	protected JDBCMetaDataConfiguration cfg
+//	protected Mappings mappings
+//	protected ReverseEngineeringStrategy revengStrategy
+//
+//	GrailsJdbcBinder(JDBCMetaDataConfiguration cfg, Settings settings, Mappings mappings,
+//			ReverseEngineeringStrategy revengStrategy) {
+//		super(cfg, settings, mappings, revengStrategy)
+//		this.settings = settings
+//		this.cfg = cfg
+//		this.mappings = mappings
+//		this.revengStrategy = revengStrategy
+//	}
+
+	GrailsJdbcBinder(ServiceRegistry serviceRegistry, Properties properties, MetadataBuildingContext mdbc,
+									 ReverseEngineeringStrategy revengStrategy, boolean preferBasicCompositeIds) {
+		super(serviceRegistry, properties, mdbc, revengStrategy, preferBasicCompositeIds)
+		this.mdbc = mdbc
+		this.properties = properties
 		this.revengStrategy = revengStrategy
+		this.serviceRegistry = serviceRegistry
 	}
 
 	@Override
 	DatabaseCollector readDatabaseSchema(String catalog, String schema) {
-		catalog = catalog ?: settings.defaultCatalogName
-		schema = schema ?: settings.defaultSchemaName
-
-		JDBCReader reader = JDBCReaderFactory.newJDBCReader(cfg.properties, settings,revengStrategy, cfg.serviceRegistry)
-		DatabaseCollector dbs = new MappingsDatabaseCollector(mappings, reader.metaDataDialect)
+		JDBCReader reader = JDBCReaderFactory.newJDBCReader(properties, revengStrategy, serviceRegistry)
+		DatabaseCollector dbs = new MappingsDatabaseCollector(mdbc.getMetadataCollector(), reader.metaDataDialect)
 		reader.readDatabaseSchema dbs, catalog, schema, new ReverseEngineerProgressListener()
 		dbs
 	}
