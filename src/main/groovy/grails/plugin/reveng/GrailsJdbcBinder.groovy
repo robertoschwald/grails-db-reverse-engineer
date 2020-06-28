@@ -38,20 +38,6 @@ class GrailsJdbcBinder extends JDBCBinder {
 	private ReverseEngineeringStrategy revengStrategy
 	private final ServiceRegistry serviceRegistry
 
-//	protected Settings settings
-//	protected JDBCMetaDataConfiguration cfg
-//	protected Mappings mappings
-//	protected ReverseEngineeringStrategy revengStrategy
-//
-//	GrailsJdbcBinder(JDBCMetaDataConfiguration cfg, Settings settings, Mappings mappings,
-//			ReverseEngineeringStrategy revengStrategy) {
-//		super(cfg, settings, mappings, revengStrategy)
-//		this.settings = settings
-//		this.cfg = cfg
-//		this.mappings = mappings
-//		this.revengStrategy = revengStrategy
-//	}
-
 	GrailsJdbcBinder(ServiceRegistry serviceRegistry, Properties properties, MetadataBuildingContext mdbc,
 									 ReverseEngineeringStrategy revengStrategy, boolean preferBasicCompositeIds) {
 		super(serviceRegistry, properties, mdbc, revengStrategy, preferBasicCompositeIds)
