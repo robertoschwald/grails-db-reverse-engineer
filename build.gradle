@@ -1,8 +1,3 @@
-println  "plugin Root project:   ${project.rootProject}";
-println  "plugin rootDir:      ${project.rootDir}"
-println  "plugin projectDir:   ${project.projectDir}";
-println  "plugin user dir:  ${System.getProperty("user.dir")}";
-
 buildscript {
 	ext {
 		grailsVersion = project.grailsVersion
